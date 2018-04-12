@@ -132,16 +132,42 @@ public class AmazonKinesisRecordProducerSample {
         // 2. Create a statement
            Statement myStmt = myConn.createStatement();
         // 3. Execute a SQL query
-           ResultSet myRs = myStmt.executeQuery("select * from orders");
+           ResultSet myRs = myStmt.executeQuery("select * from alve_csv");
         // 4.Process the result set.
            System.out.println("Getting Data ");		
            while (myRs.next())
 			{
 				//System.out.println(myRs.getString("OrderID") + ", " + myRs.getString("CustomerID") + ", " + myRs.getString("ShipName") + ", " + myRs.getString("ShipAddress") );
-				items.add(myRs.getString("OrderID"));
-				items.add(myRs.getString("CustomerID"));
-				items.add(myRs.getString("ShipName"));
-				items.add(myRs.getString("ShipAddress"));
+				items.add(myRs.getString("rid"));
+				items.add(myRs.getString("uid"));
+				items.add(myRs.getString("aid"));
+				items.add(myRs.getString("oid"));
+				items.add(myRs.getString("Updated"));
+				items.add(myRs.getString("Symbol"));
+				items.add(myRs.getString("Price"));
+				items.add(myRs.getString("Quantity"));
+				items.add(myRs.getString("side"));
+				items.add(myRs.getString("OpenType"));
+				items.add(myRs.getString("CloseType"));
+				items.add(myRs.getString("Type"));
+				items.add(myRs.getString("Status"));
+				items.add(myRs.getString("TimeInForce"));
+				items.add(myRs.getString("ExpirationDate"));
+				items.add(myRs.getString("OpenDate"));
+				items.add(myRs.getString("FillDate"));
+				items.add(myRs.getString("CloseDate"));
+				items.add(myRs.getString("Comment"));
+				items.add(myRs.getString("OpenPrice"));
+				items.add(myRs.getString("Pips"));
+				items.add(myRs.getString("Profit"));
+				items.add(myRs.getString("AccountBalance"));
+				items.add(myRs.getString("AccountBalanceFilled"));
+				items.add(myRs.getString("StopLoss"));
+				items.add(myRs.getString("TakeProfit"));
+				items.add(myRs.getString("Sender"));
+				items.add(myRs.getString("ExternId"));
+				
+				
 			}
         
         //Put Records (Jorge 04/11/2018)
