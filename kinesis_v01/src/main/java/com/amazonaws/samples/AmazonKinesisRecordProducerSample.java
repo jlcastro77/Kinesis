@@ -42,8 +42,8 @@ public class AmazonKinesisRecordProducerSample {
      *      To avoid accidental leakage of your credentials, DO NOT keep
      *      the credentials file in your source directory.
      */
-
-    private static AmazonKinesis kinesis;
+    
+	private static AmazonKinesis kinesis;
 
     private static void init() throws Exception {
         /*
@@ -74,8 +74,8 @@ public class AmazonKinesisRecordProducerSample {
         //final String myStreamName = AmazonKinesisApplicationSample.SAMPLE_APPLICATION_STREAM_NAME;
         
         //Name of Stream (Jorge - 04/11/2018.)
-        final String myStreamName = "Java-K02";
-        final Integer myStreamSize = 1;
+        final String myStreamName = "Java-K150";
+        final Integer myStreamSize = 150;
 
         // Describe the stream and check if it exists.
         DescribeStreamRequest describeStreamRequest = new DescribeStreamRequest().withStreamName(myStreamName);
@@ -132,16 +132,16 @@ public class AmazonKinesisRecordProducerSample {
         // 2. Create a statement
            Statement myStmt = myConn.createStatement();
         // 3. Execute a SQL query
-           ResultSet myRs = myStmt.executeQuery("select * from orders1");
+           ResultSet myRs = myStmt.executeQuery("select * from orders");
         // 4.Process the result set.
-		
+           System.out.println("Getting Data ");		
            while (myRs.next())
 			{
-				System.out.println(myRs.getString("OrderID") + ", " + myRs.getString("CustomerID") + ", " + myRs.getString("EmployeeID") );
+				//System.out.println(myRs.getString("OrderID") + ", " + myRs.getString("CustomerID") + ", " + myRs.getString("ShipName") + ", " + myRs.getString("ShipAddress") );
 				items.add(myRs.getString("OrderID"));
 				items.add(myRs.getString("CustomerID"));
-				
-				
+				items.add(myRs.getString("ShipName"));
+				items.add(myRs.getString("ShipAddress"));
 			}
         
         //Put Records (Jorge 04/11/2018)
@@ -149,58 +149,44 @@ public class AmazonKinesisRecordProducerSample {
         System.out.println("Press CTRL-C to stop.");
         // Write records to the stream until this program is aborted.
         
-        /*
-        while (true) original
-        {
-            long createTime = System.currentTimeMillis();
-            PutRecordRequest putRecordRequest = new PutRecordRequest();
-            putRecordRequest.setStreamName(myStreamName);
-            putRecordRequest.setData(ByteBuffer.wrap(String.format("testData-%d", createTime).getBytes()));
-            putRecordRequest.setPartitionKey(String.format("partitionKey-%d", createTime));
-            PutRecordResult putRecordResult = kinesis.putRecord(putRecordRequest);
-            System.out.printf("Successfully put record, partition key : %s, ShardID : %s, SequenceNumber : %s.\n",
-                    putRecordRequest.getPartitionKey(),
-                    putRecordResult.getShardId(),
-                    putRecordResult.getSequenceNumber());
-        }
-        
-        *///
-        
-        //Simple put Record
-        //for(int i = 0; i < items.size(); ++i) 
-        //{
-        //    long createTime = System.currentTimeMillis();
-        //    PutRecordRequest putRecordRequest = new PutRecordRequest();
-        //    putRecordRequest.setStreamName(myStreamName);
-        //    putRecordRequest.setData(ByteBuffer.wrap(String.format(items.get(i), createTime).getBytes()));
-        //    putRecordRequest.setPartitionKey(String.format("partitionKey-%d", i));
-        //    PutRecordResult putRecordResult = kinesis.putRecord(putRecordRequest);
-        //    System.out.printf("Successfully put record, partition key : %s, ShardID : %s, SequenceNumber : %s.\n",
-        //            putRecordRequest.getPartitionKey(),
-        //            putRecordResult.getShardId(),
-        //            putRecordResult.getSequenceNumber());
-        //}
-        
         //Multiple record
         AmazonKinesisClientBuilder clientBuilder = AmazonKinesisClientBuilder.standard();
+        clientBuilder.setRegion("us-east-1");
         AmazonKinesis kinesisClient = clientBuilder.build();
         
         PutRecordsRequest putRecordsRequest = new PutRecordsRequest();
         putRecordsRequest.setStreamName(myStreamName);
         List <PutRecordsRequestEntry> putRecordsRequestEntryList = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-        	PutRecordsRequestEntry putRecordsRequestEntry  = new PutRecordsRequestEntry();
-        	putRecordsRequestEntry.setData(ByteBuffer.wrap(String.valueOf(i).getBytes()));
-        	putRecordsRequestEntry.setPartitionKey(String.format("partitionKey-%d", i));
-        	putRecordsRequestEntryList.add(putRecordsRequestEntry); 
-        }
         
-        putRecordsRequest.setRecords(putRecordsRequestEntryList);
-        PutRecordsResult putRecordsResult  = kinesisClient.putRecords(putRecordsRequest);
-        System.out.println("Put Result" + putRecordsResult);
+        int j = 0;
+        int count = items.size();
         
-    }
-
+        
+        while(j != items.size() ) 
+        {
+        	
+        	
+        		for (int i = 0; i < 100; i++) 
+        		
+        		{
+        			PutRecordsRequestEntry putRecordsRequestEntry  = new PutRecordsRequestEntry();
+        			putRecordsRequestEntry.setData(ByteBuffer.wrap(String.format(items.get(j)).getBytes()));
+        			putRecordsRequestEntry.setPartitionKey(String.format("partitionKey-%d", j));
+        			putRecordsRequestEntryList.add(putRecordsRequestEntry);
+        			j++;
+        			count--;
+        		
+        		}
+        		
+        		putRecordsRequest.setRecords(putRecordsRequestEntryList);
+        		PutRecordsResult putRecordsResult  = kinesisClient.putRecords(putRecordsRequest);
+        		System.out.println("Put Result" + " " + j  + putRecordsResult );
+        		putRecordsRequestEntryList.clear();
+        
+        	 }
+        	
+       }
+    
     private static void waitForStreamToBecomeAvailable(String myStreamName) throws InterruptedException {
         System.out.printf("Waiting for %s to become ACTIVE...\n", myStreamName);
 
