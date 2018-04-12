@@ -22,6 +22,9 @@ import com.amazonaws.services.kinesis.model.ListStreamsRequest;
 import com.amazonaws.services.kinesis.model.ListStreamsResult;
 import com.amazonaws.services.kinesis.model.PutRecordRequest;
 import com.amazonaws.services.kinesis.model.PutRecordResult;
+import com.amazonaws.services.kinesis.model.PutRecordsRequest;
+import com.amazonaws.services.kinesis.model.PutRecordsRequestEntry;
+import com.amazonaws.services.kinesis.model.PutRecordsResult;
 import com.amazonaws.services.kinesis.model.ResourceNotFoundException;
 import com.amazonaws.services.kinesis.model.StreamDescription;
 
@@ -164,23 +167,37 @@ public class AmazonKinesisRecordProducerSample {
         *///
         
         //Simple put Record
-        for(int i = 0; i < items.size(); ++i) 
-        {
-            long createTime = System.currentTimeMillis();
-            PutRecordRequest putRecordRequest = new PutRecordRequest();
-            putRecordRequest.setStreamName(myStreamName);
-            putRecordRequest.setData(ByteBuffer.wrap(String.format(items.get(i), createTime).getBytes()));
-            putRecordRequest.setPartitionKey(String.format("partitionKey-%d", i));
-            PutRecordResult putRecordResult = kinesis.putRecord(putRecordRequest);
-            System.out.printf("Successfully put record, partition key : %s, ShardID : %s, SequenceNumber : %s.\n",
-                    putRecordRequest.getPartitionKey(),
-                    putRecordResult.getShardId(),
-                    putRecordResult.getSequenceNumber());
-        }
+        //for(int i = 0; i < items.size(); ++i) 
+        //{
+        //    long createTime = System.currentTimeMillis();
+        //    PutRecordRequest putRecordRequest = new PutRecordRequest();
+        //    putRecordRequest.setStreamName(myStreamName);
+        //    putRecordRequest.setData(ByteBuffer.wrap(String.format(items.get(i), createTime).getBytes()));
+        //    putRecordRequest.setPartitionKey(String.format("partitionKey-%d", i));
+        //    PutRecordResult putRecordResult = kinesis.putRecord(putRecordRequest);
+        //    System.out.printf("Successfully put record, partition key : %s, ShardID : %s, SequenceNumber : %s.\n",
+        //            putRecordRequest.getPartitionKey(),
+        //            putRecordResult.getShardId(),
+        //            putRecordResult.getSequenceNumber());
+        //}
         
         //Multiple record
+        AmazonKinesisClientBuilder clientBuilder = AmazonKinesisClientBuilder.standard();
+        AmazonKinesis kinesisClient = clientBuilder.build();
         
+        PutRecordsRequest putRecordsRequest = new PutRecordsRequest();
+        putRecordsRequest.setStreamName(myStreamName);
+        List <PutRecordsRequestEntry> putRecordsRequestEntryList = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+        	PutRecordsRequestEntry putRecordsRequestEntry  = new PutRecordsRequestEntry();
+        	putRecordsRequestEntry.setData(ByteBuffer.wrap(String.valueOf(i).getBytes()));
+        	putRecordsRequestEntry.setPartitionKey(String.format("partitionKey-%d", i));
+        	putRecordsRequestEntryList.add(putRecordsRequestEntry); 
+        }
         
+        putRecordsRequest.setRecords(putRecordsRequestEntryList);
+        PutRecordsResult putRecordsResult  = kinesisClient.putRecords(putRecordsRequest);
+        System.out.println("Put Result" + putRecordsResult);
         
     }
 
