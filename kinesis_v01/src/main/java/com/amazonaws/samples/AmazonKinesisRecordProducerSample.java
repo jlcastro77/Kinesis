@@ -74,8 +74,8 @@ public class AmazonKinesisRecordProducerSample {
         //final String myStreamName = AmazonKinesisApplicationSample.SAMPLE_APPLICATION_STREAM_NAME;
         
         //Name of Stream (Jorge - 04/11/2018.)
-        final String myStreamName = "Java-K150";
-        final Integer myStreamSize = 150;
+        final String myStreamName = "Java-K450-V5";
+        final Integer myStreamSize = 450;
 
         // Describe the stream and check if it exists.
         DescribeStreamRequest describeStreamRequest = new DescribeStreamRequest().withStreamName(myStreamName);
@@ -137,37 +137,36 @@ public class AmazonKinesisRecordProducerSample {
            System.out.println("Getting Data ");		
            while (myRs.next())
 			{
-				//System.out.println(myRs.getString("OrderID") + ", " + myRs.getString("CustomerID") + ", " + myRs.getString("ShipName") + ", " + myRs.getString("ShipAddress") );
-				items.add(myRs.getString("rid"));
-				items.add(myRs.getString("uid"));
-				items.add(myRs.getString("aid"));
-				items.add(myRs.getString("oid"));
-				items.add(myRs.getString("Updated"));
-				items.add(myRs.getString("Symbol"));
-				items.add(myRs.getString("Price"));
-				items.add(myRs.getString("Quantity"));
-				items.add(myRs.getString("side"));
-				items.add(myRs.getString("OpenType"));
-				items.add(myRs.getString("CloseType"));
-				items.add(myRs.getString("Type"));
-				items.add(myRs.getString("Status"));
-				items.add(myRs.getString("TimeInForce"));
-				items.add(myRs.getString("ExpirationDate"));
-				items.add(myRs.getString("OpenDate"));
-				items.add(myRs.getString("FillDate"));
-				items.add(myRs.getString("CloseDate"));
-				items.add(myRs.getString("Comment"));
-				items.add(myRs.getString("OpenPrice"));
-				items.add(myRs.getString("Pips"));
-				items.add(myRs.getString("Profit"));
-				items.add(myRs.getString("AccountBalance"));
-				items.add(myRs.getString("AccountBalanceFilled"));
-				items.add(myRs.getString("StopLoss"));
-				items.add(myRs.getString("TakeProfit"));
-				items.add(myRs.getString("Sender"));
-				items.add(myRs.getString("ExternId"));
 				
-				
+        	   items.add(
+        			   
+        			   myRs.getString("rid") + ", " + 
+        	           myRs.getString("uid") + ", " + 
+        			   myRs.getString("aid") + ", " + 
+        	           myRs.getString("oid") + ", " + 
+        			   myRs.getString("Updated") + ", " +
+        			   myRs.getString("Symbol") + ", " +
+        			   myRs.getString("Price") + ", " +
+        			   myRs.getString("Quantity") + ", " +
+        			   myRs.getString("Side") + ", " +
+        			   myRs.getString("OpenType") + ", " +
+        			   myRs.getString("CloseType") + ", " +
+        			   myRs.getString("Type") + ", " +
+        			   myRs.getString("Status") + ", " +
+        			   myRs.getString("TimeInForce") + ", " +
+        			   myRs.getString("ExpirationDate") + ", " +
+        			   myRs.getString("OpenDate") + ", " +
+        			   myRs.getString("FillDate") + ", " +
+        			   myRs.getString("CloseDate") + ", " +
+        			   myRs.getString("CloseDateSec") + ", " +
+        			   myRs.getString("CloseDateNew") + ", " +
+        			   myRs.getString("TradeCommission") + ", " +
+        			   myRs.getString("AgentCommission") + ", " +
+        			   myRs.getString("Swap") 
+        			   //myRs.getString("Comment")
+        			   
+        			   );   			   
+        	    
 			}
         
         //Put Records (Jorge 04/11/2018)
